@@ -5,7 +5,7 @@ for (int i =0; i<names.Length; i++)
     names[i] = Console.ReadLine();
 }
 Console.WriteLine();
-Console.WriteLine("Nmaes In Reverse Order: ");
+Console.WriteLine("Nmaes In Reverse Order (day3): ");
 
 for (int i = names.Length - 1; i >= 0; i --)
 
