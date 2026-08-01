@@ -127,8 +127,3 @@ class Program
 }
     
 
-//         Console.WriteLine($"\nYou selected option {choice}");
-//         Console.WriteLine($"First Number : {number1}");
-//         Console.WriteLine($"Second Number: {number2}");
-//     }
-// }
