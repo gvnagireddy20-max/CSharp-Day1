@@ -4,33 +4,35 @@ namespace Day18Middleware.Services;
 
 public class TodoService : ITodoService
 {
-    private readonly List<Todo> _todos = new()
-    {
-        new Todo
-        {
-            Id = 1,
-            Title = "Learn Middleware",
-            Completed = false
-        },
-        new Todo
-        {
-            Id = 2,
-            Title = "Learn Swagger",
-            Completed = false
-        }
-    };
+    private readonly ITodoStore _store;
 
-    public List<Todo> GetTodos()
+    public TodoService(ITodoStore store)
     {
-        return _todos;
+        _store = store;
+    }
+
+    public IEnumerable<Todo> GetTodos()
+    {
+        return _store.GetAll();
+    }
+
+    public Todo? GetTodo(Guid id)
+    {
+        return _store.GetById(id);
     }
 
     public Todo CreateTodo(Todo todo)
     {
-        todo.Id = _todos.Count + 1;
+        return _store.Add(todo);
+    }
 
-        _todos.Add(todo);
+    public bool UpdateTodo(Guid id, Todo todo)
+    {
+        return _store.Update(id, todo);
+    }
 
-        return todo;
+    public bool DeleteTodo(Guid id)
+    {
+        return _store.Delete(id);
     }
 }
