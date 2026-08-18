@@ -8,6 +8,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<ITodoService, TodoService>();
 
+builder.Services.AddSingleton<ITodoStore, TodoStore>();
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(Options =>

@@ -4,45 +4,82 @@ using Day18Middleware.Services;
 
 namespace Day18Middleware.Controllers;
 
-/// <summary>
-/// Provides API endpoints for managing Todo items.
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class TodoController : ControllerBase
 {
     private readonly ITodoService _todoService;
+
     public TodoController(ITodoService todoService)
     {
         _todoService = todoService;
     }
-    /// <summary>
-    /// Gets all Todo items.
-    /// </summary>
-    /// <returns>A list of Todo items.</returns>
-    /// <response code="200">Returns the list of Todo items.</response>
+
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetTodos()
     {
         var todos = _todoService.GetTodos();
-       
+
         return Ok(todos);
     }
 
-    /// <summary>
-    /// Creates a new Todo item.
-    /// </summary>
-    /// <param name="todo">The Todo item to create.</param>
-    /// <returns>The newly created Todo item.</returns>
-    /// <response code="201">The Todo item was successfully created.</response>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult GetTodo(Guid id)
+    {
+        var todo = _todoService.GetTodo(id);
+
+        if (todo == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(todo);
+    }
+
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public IActionResult CreateTodo(Todo todo)
     {
         var createdTodo = _todoService.CreateTodo(todo);
 
         return CreatedAtAction(
-            nameof(GetTodos),
+            nameof(GetTodo),
             new { id = createdTodo.Id },
             createdTodo);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult UpdateTodo(Guid id, Todo todo)
+    {
+        var updated = _todoService.UpdateTodo(id, todo);
+
+        if (!updated)
+        {
+            return NotFound();
+        }
+
+        var updatedTodo = _todoService.GetTodo(id);
+
+        return Ok(updatedTodo);
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult DeleteTodo(Guid id)
+    {
+        var deleted = _todoService.DeleteTodo(id);
+
+        if (!deleted)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }
