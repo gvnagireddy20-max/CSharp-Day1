@@ -16,22 +16,26 @@ public class TodoService : ITodoService
         return _store.GetAll();
     }
 
-    public Todo? GetTodo(Guid id)
+    public Todo? GetTodo(int id)
     {
         return _store.GetById(id);
     }
 
     public Todo CreateTodo(Todo todo)
     {
+        todo.Id = _store.GetAll().Any()
+            ? _store.GetAll().Max(t => t.Id) + 1
+            : 1;
+
         return _store.Add(todo);
     }
 
-    public bool UpdateTodo(Guid id, Todo todo)
+    public bool UpdateTodo(int id, Todo todo)
     {
         return _store.Update(id, todo);
     }
 
-    public bool DeleteTodo(Guid id)
+    public bool DeleteTodo(int id)
     {
         return _store.Delete(id);
     }

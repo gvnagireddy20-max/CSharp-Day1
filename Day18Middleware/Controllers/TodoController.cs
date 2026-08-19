@@ -16,7 +16,6 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetTodos()
     {
         var todos = _todoService.GetTodos();
@@ -24,10 +23,8 @@ public class TodoController : ControllerBase
         return Ok(todos);
     }
 
-    [HttpGet("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetTodo(Guid id)
+    [HttpGet("{id:int}")]
+    public IActionResult GetTodo(int id)
     {
         var todo = _todoService.GetTodo(id);
 
@@ -40,7 +37,6 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
     public IActionResult CreateTodo(Todo todo)
     {
         var createdTodo = _todoService.CreateTodo(todo);
@@ -51,10 +47,8 @@ public class TodoController : ControllerBase
             createdTodo);
     }
 
-    [HttpPut("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult UpdateTodo(Guid id, Todo todo)
+    [HttpPut("{id:int}")]
+    public IActionResult UpdateTodo(int id, Todo todo)
     {
         var updated = _todoService.UpdateTodo(id, todo);
 
@@ -63,15 +57,11 @@ public class TodoController : ControllerBase
             return NotFound();
         }
 
-        var updatedTodo = _todoService.GetTodo(id);
-
-        return Ok(updatedTodo);
+        return Ok(_todoService.GetTodo(id));
     }
 
-    [HttpDelete("{id:guid}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult DeleteTodo(Guid id)
+    [HttpDelete("{id:int}")]
+    public IActionResult DeleteTodo(int id)
     {
         var deleted = _todoService.DeleteTodo(id);
 
@@ -80,6 +70,6 @@ public class TodoController : ControllerBase
             return NotFound();
         }
 
-        return NoContent();
+        return Ok();
     }
 }
