@@ -15,8 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(Options =>
 {
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlpath = Path.Combine(AppContext.BaseDirectory,xmlFile);
-    
+    var xmlpath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
     Options.IncludeXmlComments(xmlpath);
 });
 
@@ -35,4 +35,3 @@ app.UseMiddleware<LoggingMiddleware>();
 app.MapControllers();
 
 app.Run();
-

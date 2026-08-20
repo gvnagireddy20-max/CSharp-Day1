@@ -6,11 +6,11 @@ public interface ITodoService
 {
     IEnumerable<Todo> GetTodos();
 
-    Todo? GetTodo(Guid id);
+    Todo? GetTodo(int id);
 
     Todo CreateTodo(Todo todo);
 
-    bool UpdateTodo(Guid id, Todo todo);
+    bool UpdateTodo(int id, Todo todo);
 
-    bool DeleteTodo(Guid id);
+    bool DeleteTodo(int id);
 }

@@ -6,13 +6,11 @@ public interface ITodoStore
 {
     IEnumerable<Todo> GetAll();
 
-    Todo? GetById(Guid id);
+    Todo? GetById(int id);
 
     Todo Add(Todo todo);
 
-    bool Update(Guid id, Todo todo);
+    bool Update(int id, Todo todo);
 
-    bool Delete(Guid id);
-
-
+    bool Delete(int id);
 }

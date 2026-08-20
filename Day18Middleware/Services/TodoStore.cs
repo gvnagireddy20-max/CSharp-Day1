@@ -1,67 +1,91 @@
-using System.Collections.Concurrent;
 using Day18Middleware;
 
 namespace Day18Middleware.Services;
 
 public class TodoStore : ITodoStore
 {
-    private readonly ConcurrentDictionary<Guid, Todo> _todos = new();
+    private readonly object _lock = new();
 
-    public TodoStore()
+    private readonly List<Todo> _todos = new()
     {
-        var todo1 = new Todo
+        new Todo
         {
-            Id = Guid.NewGuid(),
+            Id = 1,
             Title = "Learn Middleware",
-            Completed = false
-        };
+            Completed = false,
+            Priority = 3,
+            DueDate = DateTime.Now.AddDays(1)
+        },
 
-        var todo2 = new Todo
+        new Todo
         {
-            Id = Guid.NewGuid(),
+            Id = 2,
             Title = "Learn Swagger",
-            Completed = false
-        };
-
-        _todos.TryAdd(todo1.Id, todo1);
-        _todos.TryAdd(todo2.Id, todo2);
-    }
+            Completed = false,
+            Priority = 3,
+            DueDate = DateTime.Now.AddDays(2)
+        }
+    };
 
     public IEnumerable<Todo> GetAll()
     {
-        return _todos.Values;
+        lock (_lock)
+        {
+            return _todos.ToList();
+        }
     }
 
-    public Todo? GetById(Guid id)
+    public Todo? GetById(int id)
     {
-        _todos.TryGetValue(id, out var todo);
-
-        return todo;
+        lock (_lock)
+        {
+            return _todos.FirstOrDefault(todo => todo.Id == id);
+        }
     }
 
     public Todo Add(Todo todo)
     {
-        todo.Id = Guid.NewGuid();
-
-        _todos.TryAdd(todo.Id, todo);
-
-        return todo;
-    }
-
-    public bool Update(Guid id, Todo todo)
-    {
-        if (!_todos.TryGetValue(id, out var existingTodo))
+        lock (_lock)
         {
-            return false;
+            _todos.Add(todo);
+            return todo;
         }
-
-        todo.Id = id;
-
-        return _todos.TryUpdate(id, todo, existingTodo);
     }
 
-    public bool Delete(Guid id)
+    public bool Update(int id, Todo todo)
     {
-        return _todos.TryRemove(id, out _);
+        lock (_lock)
+        {
+            var existingTodo = _todos.FirstOrDefault(todo => todo.Id == id);
+
+            if (existingTodo == null)
+            {
+                return false;
+            }
+
+            existingTodo.Title = todo.Title;
+            existingTodo.Completed = todo.Completed;
+            existingTodo.Priority = todo.Priority;
+            existingTodo.DueDate = todo.DueDate;
+
+            return true;
+        }
+    }
+
+    public bool Delete(int id)
+    {
+        lock (_lock)
+        {
+            var todo = _todos.FirstOrDefault(todo => todo.Id == id);
+
+            if (todo == null)
+            {
+                return false;
+            }
+
+            _todos.Remove(todo);
+
+            return true;
+        }
     }
 }
